@@ -4,31 +4,31 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    public GameObject floorTilePrefab;  // 设置为你的 FloorTile 预制件
-    public GameObject destructibleObstaclePrefab;  // 可破坏障碍物预制件
-    public GameObject indestructibleObstaclePrefab;  // 不可破坏障碍物预制件
-    public float tileSpacing = 1.0f;    // 瓷砖间距
-    public int numberOfDestructibleObstacles = 10;  // 可破坏障碍物的数量
-    public int numberOfIndestructibleObstacles = 5;  // 不可破坏障碍物的数量
+    public GameObject floorTilePrefab;  
+    public GameObject destructibleObstaclePrefab; 
+    public GameObject indestructibleObstaclePrefab; 
+    public float tileSpacing = 1.0f;   
+    public int numberOfDestructibleObstacles = 10;  
+    public int numberOfIndestructibleObstacles = 5;
 
-    private int gridWidth;  // 网格的宽度
-    private int gridHeight;  // 网格的高度
-    private List<Vector3> floorTilePositions = new List<Vector3>();  // 记录每个地板位置
+    private int gridWidth;  
+    private int gridHeight;  
+    private List<Vector3> floorTilePositions = new List<Vector3>(); 
 
     void Start()
     {
         CalculateGridSizeAndCreateGrid();
-        GenerateObstacles();  // 确保在地板生成之后生成障碍物
+        GenerateObstacles();  // Ensure that obstacles are generated after the floor is generated
     }
 
     void CalculateGridSizeAndCreateGrid()
     {
-        // 获取相机的宽度和高度
+        // Get the width and height of the camera
         Camera cam = Camera.main;
         float screenHeight = 2f * cam.orthographicSize;
         float screenWidth = screenHeight * cam.aspect;
 
-        // 计算网格的宽度和高度
+        // Calculate the width and height of the grid
         gridWidth = Mathf.CeilToInt(screenWidth / tileSpacing);
         gridHeight = Mathf.CeilToInt(screenHeight / tileSpacing);
 
@@ -37,13 +37,13 @@ public class GridManager : MonoBehaviour
 
     void CreateGrid(int width, int height)
     {
-        // 清除已有的子对象，防止多次生成
+        // Clear existing child objects to prevent multiple generation
         foreach (Transform child in transform)
         {
             GameObject.Destroy(child.gameObject);
         }
 
-        floorTilePositions.Clear();  // 清空之前记录的地板位置
+        floorTilePositions.Clear();  // Empty the previously recorded floor location
 
         for (int x = 0; x < width; x++)
         {
@@ -51,23 +51,23 @@ public class GridManager : MonoBehaviour
             {
                 Vector3 position = new Vector3(x * tileSpacing, y * tileSpacing, 0);
                 Instantiate(floorTilePrefab, position, Quaternion.identity, transform);
-                floorTilePositions.Add(position);  // 记录地板位置
-                Debug.Log("Added floor tile position: " + position);  // 添加调试信息
+                floorTilePositions.Add(position);  // Record floor position
+                Debug.Log("Added floor tile position: " + position);  // Adding debugging information
             }
         }
-        Debug.Log("Total floor tile positions: " + floorTilePositions.Count);  // 添加调试信息
+        Debug.Log("Total floor tile positions: " + floorTilePositions.Count);  // Adding debugging information
     }
 
     void GenerateObstacles()
     {
-        // 确保有可用的地板位置
+        // Ensure that there are available flooring locations
         if (floorTilePositions.Count == 0)
         {
             Debug.LogWarning("No floor tile positions available.");
             return;
         }
 
-        // 随机生成可破坏障碍物
+        // Randomly generated destructible obstacles
         int destructibleObstaclesGenerated = 0;
         while (destructibleObstaclesGenerated < numberOfDestructibleObstacles && floorTilePositions.Count > 0)
         {
@@ -76,7 +76,7 @@ public class GridManager : MonoBehaviour
             destructibleObstaclesGenerated++;
         }
 
-        // 随机生成不可破坏障碍物
+        // Randomly generated indestructible obstacles
         int indestructibleObstaclesGenerated = 0;
         while (indestructibleObstaclesGenerated < numberOfIndestructibleObstacles && floorTilePositions.Count > 0)
         {
@@ -85,7 +85,7 @@ public class GridManager : MonoBehaviour
             indestructibleObstaclesGenerated++;
         }
 
-        // 输出生成的障碍物数量以便调试
+        // Output the number of obstacles generated for debugging
         Debug.Log("Generated destructible obstacles: " + destructibleObstaclesGenerated);
         Debug.Log("Generated indestructible obstacles: " + indestructibleObstaclesGenerated);
     }
@@ -94,7 +94,7 @@ public class GridManager : MonoBehaviour
     {
         int index = Random.Range(0, floorTilePositions.Count);
         Vector3 position = floorTilePositions[index];
-        floorTilePositions.RemoveAt(index);  // 确保不会重复生成在同一个位置
+        floorTilePositions.RemoveAt(index);  // Ensure that it is not generated repeatedly in the same location
         return position;
     }
 
